@@ -1,16 +1,8 @@
 window.onload = function() {
-  // for (var i = 0; i < 5; i++) {
-  //   var pageName = 'page';
-  //   pageName = pageName + i;
-  //   var pageInfo = localStorage.getItem('pageName');
-  //   if (pageInfo == null)
-  //   {
-  //     var pageInitValue = {pageName:[]};
-  //     localStorage.setItem(pageName, JSON.stringify(pageInitValue));
-  //   }
-  // }
-  // TODO: neeed add the call here for page storage
-turnJSONtoOjb();
+  var numberOfPages = 1;
+
+  //getGists(numberOfPages, true);
+  //displayGists(numberInitialPagesToDisplay);
 }
 
 function saveDemoInput() {
@@ -25,16 +17,40 @@ function displayLocalStorage() {
 	document.getElementById('output').innerHTML = localStorage.getItem('demoText');
 }
 
-function getGists() {
+function getGists(numberOfPages, refreshGists) {
+  // Check if we need to refresh the gists in local storage
+  var gistsAlreadyStored = false;
+  if (refreshGists === false) {
+    // Refresh gists only if any are missing
+    gistsAlreadyStored = gistsExistLocally(numberOfPages);
+    if (gistsAlreadyStored === true)
+    {
+      return;
+    }
+  }
+
+  // Get new gists
 	var request = new XMLHttpRequest();
-  var numberOfPages = 1;	
   for (var i = 0; i < numberOfPages; i++) {
     requestGistPage(i);
 	}
-	// var url = 'https://api.github.com/gists?page=1'
-	// request.open('GET', url);
-	// request.send();
 }
+
+function gistsExistLocally(numberOfPages) {
+  var pageName = 'page';
+  var pageInfo = null;
+  for (var i = 0; i < numberOfPages; i++)
+  {
+    pageName += i;
+    pageInfo = localStorage.getItem(pageName);
+    if (pageInfo === null) {
+      return false; // All gists do not exist locally
+    }
+  }
+  
+  return true; // All required gists exist locally
+}
+
 
 function requestGistPage(pageNumber) {
   // Test code to get the data from different pages
@@ -50,6 +66,11 @@ function requestGistPage(pageNumber) {
     if (this.readyState == 4)
     {
       localStorage.setItem(pageName, JSON.stringify(this.responseText));
+
+      // If this is the first page, then make sure it gets displayed
+      if (pageNumber === 0) {
+        displayGists(1);
+      }
     }
   }
 
@@ -60,14 +81,14 @@ function requestGistPage(pageNumber) {
 // Gets the gists onload first
 	// Store them on the page or in local storage
 	// Can store them as different page objects?
-//getGists(); // This means the API requests
+//getGists(); // This means the API requests. move this to onload
 
-function turnJSONtoOjb() {
-    var pageInfo = null;
-    while (pageInfo === null) {
+function displayGists(pagesToDisplay) {
+    // var pageInfo = null;
+    // while (pageInfo === null) {
       pageInfo = localStorage.getItem('page0');
-      break;
-    } 
+    //   break;
+    // } 
 
     var firstStringify = JSON.parse(pageInfo);
     var finalObjectList = JSON.parse(firstStringify);
@@ -111,6 +132,6 @@ function dlEntry(term, gist) {
   //dd.baseURI = gist.html_url;
   return  {'dt':dt, 'dd':dd};
 }
-//turnJSONtoOjb();
+//displayGists(1);
 
 // Lets display the results
