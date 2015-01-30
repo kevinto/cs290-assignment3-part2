@@ -1,17 +1,22 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset='utf-8'>
-	<title>Gist App</title>
-	<script src='demo.js'></script>
+  <meta charset='utf-8'>
+  <title>Gist App</title>
+  <script src='demo.js'></script>
 </head>
 <body>
-	<div id="output"></div>
-	<form>
-		<input type='text' name='demo-input'>
-		<input type='button' name='save' onclick='saveDemoInput()' value='Save Text'>
-		<input type='button' name='clear' onclick='clearLocalStorage()' value='Clear Local Storage'>
-		<input type='button' name='display' onclick='displayLocalStorage()' value='Display Local Storage'>
-	</form>
+  <div id="output"></div>
+  <form>
+    <input type='text' name='demo-input'>
+    <input type='button' name='save' onclick='saveDemoInput()' value='Save Text'>
+    <input type='button' name='clear' onclick='clearLocalStorage()' value='Clear Local Storage'>
+    <input type='button' name='display' onclick='displayLocalStorage()' value='Display Local Storage'>
+  </form>
+
+  <section>
+    <ul id="gist-list">
+    </ul> 	
+  </section>
 </body>
 </html>
