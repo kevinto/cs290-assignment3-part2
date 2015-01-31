@@ -6,13 +6,32 @@
   <script src='demo.js'></script>
 </head>
 <body>
-  <div id="output"></div>
-  <form>
+  <!--form>
     <input type='text' name='demo-input'>
     <input type='button' name='save' onclick='saveDemoInput()' value='Save Text'>
     <input type='button' name='clear' onclick='clearLocalStorage()' value='Clear Local Storage'>
     <input type='button' name='display' onclick='displayLocalStorage()' value='Display Local Storage'>
-  </form>
+  </form -->
+  <div>
+    <div>
+      <input type="text" name="numerical_input">
+      <label>Number of Pages to Display (Max: 5 pages)</label>
+    </div>
+    <div>
+      <label>Please select a filtering option: </label><br>
+      <input type="checkbox" id="display_javascript" value="yes">
+      <label>Javascript</label>
+      <input type="checkbox" id="display_cpp">
+      <label>C++</label>
+      <input type="checkbox" id="display_sql">
+      <label>SQL</label>
+      <input type="checkbox" id="display_python">
+      <label>Python</label>
+    </div>
+    <div>
+    <input type="submit" value="Search" onclick="testme();">
+    </div>
+  </div>
 
   <section>
     <ul id="gist-list">

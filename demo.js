@@ -135,3 +135,14 @@ function dlEntry(term, gist) {
 //displayGists(1);
 
 // Lets display the results
+
+function testme()
+{
+  console.log('method execution successful');
+  displayGists(1);
+}
+
+// How to get value from an element 
+function howtocheckboxes() {
+  document.getElementById("display_javascript").checked;
+}
