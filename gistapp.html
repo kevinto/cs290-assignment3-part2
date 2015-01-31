@@ -4,9 +4,11 @@
   <meta charset="UTF-8">
   <title>Gist App</title>
   <script src='demo.js'></script>
+  <link rel="stylesheet" href="gistapp.css">
 </head>
-<body onload="displayGists(1);">
-  <div>
+<body onload="displayGists(1); checkForFavorites();">
+  <div id="searchablegists">
+    <h1>Gist API Results</h1>
     <div>
       <input type="number" id="numerical_input" min=1 max=5 value=1>
       <label>Number of Pages to Display (Max: 5 pages)</label>
@@ -25,11 +27,14 @@
     <div>
     <input type="submit" value="Search" onclick="requeryResults();">
     </div>
-  </div>
 
-  <section>
     <ol id="gist-list">
     </ol> 	
-  </section>
+  </div>
+  <div id="favoritegists">
+    <h1>Favorited Gists: </h1>
+    <ol id="fav-list">
+    </ol>   
+  </div>
 </body>
 </html>

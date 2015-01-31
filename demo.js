@@ -79,7 +79,7 @@ function displayGists(pagesToDisplay) {
     return;
   }
 
-  removeAllListItems();
+  removeAllListItems('gist-list');
 
   // Put all gist pages to be displayed into one array
   var pageName = 'page';
@@ -103,8 +103,8 @@ function displayGists(pagesToDisplay) {
   createGistList(orderedList, filteredGists);
 }
 
-function removeAllListItems() {
-  var ul = document.getElementById('gist-list');
+function removeAllListItems(listName) {
+  var ul = document.getElementById(listName);
   while (ul.firstChild) {
     ul.removeChild(ul.firstChild);
   }
@@ -163,23 +163,26 @@ function getFilteredGists(unfilteredGists) {
   return filteredGists;
 }
 
-function createGistList(ul, objectList) {
+function createGistList(ol, objectList) {
   objectList.forEach(function(s) {
-    ul.appendChild(liDesc(s));
+    ol.appendChild(liDesc(s));
   });
 }
 
 function liDesc(gist) {
   var li = document.createElement('li'); 
 
+  // Create hyperlink
   var a = document.createElement('a');
   var aText = document.createTextNode(gist.description);
   if (gist.description === "") {
     aText = document.createTextNode('no description');
   }
-
   a.setAttribute('href', gist.html_url);
   a.appendChild(aText);
+
+  // Create favorite button
+
   li.appendChild(a);
   return li;
 }
@@ -188,4 +191,38 @@ function requeryResults()
 {
   var numPgToDisplay = document.getElementById('numerical_input').value;
   displayGists(numPgToDisplay);
+}
+
+
+// Favorites Section
+function checkForFavorites()
+{
+  if (storedFavListEmpty())
+  {
+    DisplayEmptyFavoriteList();
+  }
+}
+
+function storedFavListEmpty() {
+  var pageInfo = null;
+  pageInfo = localStorage.getItem('favlist');
+  if (pageInfo === null || pageInfo.toString() === '""') {
+    return true; // There are no favorited items
+  }
+
+  return false; // There are favorited items
+}
+
+function DisplayEmptyFavoriteList() {
+  removeAllListItems('fav-list');
+
+  var orderedList = document.getElementById('fav-list');
+
+  orderedList.appendChild(createTextLi('There are currently no favorites.'));
+}
+
+function createTextLi(displayText) {
+  var li = document.createElement('li'); 
+  li.innerText = displayText;
+  return li;
 }

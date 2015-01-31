@@ -1,0 +1,9 @@
+#searchablegists {
+	float: left;
+	width: 50%;
+}
+
+#favoritegists {
+	float: right;
+	width: 50%;
+}
