@@ -2,19 +2,6 @@ window.onload = function() {
   var numberOfPages = 5;
 
   getGists(numberOfPages, false);
-  //displayGists(numberInitialPagesToDisplay);
-}
-
-function saveDemoInput() {
-	localStorage.setItem('demoText', document.getElementsByName('demo-input')[0].value);
-}
-
-function clearLocalStorage() {
-	localStorage.clear();
-}
-
-function displayLocalStorage() {
-	document.getElementById('output').innerHTML = localStorage.getItem('demoText');
 }
 
 function getGists(numberOfPages, refreshGists) {
@@ -32,7 +19,7 @@ function getGists(numberOfPages, refreshGists) {
 
   // Get new gists
 	var request = new XMLHttpRequest();
-  for (var i = 0; i < numberOfPages; i++) {
+  for (var i = 1; i <= numberOfPages; i++) {
     requestGistPage(i);
 	}
 }
@@ -41,7 +28,7 @@ function gistsExistLocally(numberOfPages) {
   var pageName = 'page';
   var currPageName = '';
   var pageInfo = null;
-  for (var i = 0; i < numberOfPages; i++)
+  for (var i = 1; i <= numberOfPages; i++)
   {
     currPageName = pageName + i;
     pageInfo = localStorage.getItem(currPageName);
@@ -98,7 +85,7 @@ function displayGists(pagesToDisplay) {
   var pageName = 'page';
   var currPgName = '';
   var totalGistArray = new Array();
-  for (var i = 0; i < pagesToDisplay; i++)
+  for (var i = 1; i <= pagesToDisplay; i++)
   {
     currPgName = pageName + i;
     pageInfo = localStorage.getItem(currPgName);
@@ -111,8 +98,9 @@ function displayGists(pagesToDisplay) {
     })
   }
 
+  var filteredGists = getFilteredGists(totalGistArray);
   var orderedList = document.getElementById('gist-list');
-  createGistList(orderedList, totalGistArray);
+  createGistList(orderedList, filteredGists);
 }
 
 function removeAllListItems() {
@@ -120,6 +108,59 @@ function removeAllListItems() {
   while (ul.firstChild) {
     ul.removeChild(ul.firstChild);
   }
+}
+
+function getFilteredGists(unfilteredGists) {
+  var filteredGists = new Array();
+  var filterJs = document.getElementById('display_javascript').checked;
+  var filterJson = document.getElementById('display_json').checked;
+  var filterSql = document.getElementById('display_sql').checked;
+  var filterPy = document.getElementById('display_python').checked;
+
+  if (!filterJs && !filterJson && !filterSql && !filterPy) {
+    return unfilteredGists;
+  }
+
+  for (var i = 0; i < unfilteredGists.length; i++)
+  {
+    var gistObj = unfilteredGists[i]; 
+    var gistFiles = gistObj.files;
+    for (var gistFile in gistFiles) {
+      // if (gistFiles.hasOwnProperty(prop)) {
+      //   console.log("o." + prop + " = " + gistFiles[prop]);
+      // }
+      var filterLangFound = false;
+      var gistFile = gistFiles[gistFile];
+      for (var gistFileProp in gistFile) {
+        if (gistFileProp === 'language' ) {
+          if (filterJs && gistFile['language'] === 'JavaScript') {
+            filteredGists.push(gistObj);
+            filterLangFound = true;
+          }
+          else if (filterJson && gistFile['language'] === 'JSON') {
+            filteredGists.push(gistObj);
+            filterLangFound = true;
+          }
+          else if (filterSql && gistFile['language'] === 'SQL') {
+            filteredGists.push(gistObj);
+            filterLangFound = true;
+          }
+          else if (filterPy && gistFile['language'] === 'Python') {
+            filteredGists.push(gistObj);
+            filterLangFound = true;
+          }
+
+          break;
+        }
+      }
+
+      if (filterLangFound) {
+        break;
+      }
+    }
+  } 
+
+  return filteredGists;
 }
 
 function createGistList(ul, objectList) {
@@ -134,7 +175,7 @@ function liDesc(gist) {
   var a = document.createElement('a');
   var aText = document.createTextNode(gist.description);
   if (gist.description === "") {
-    aText = document.createTextNode('This gist has no description!!!');
+    aText = document.createTextNode('no description');
   }
 
   a.setAttribute('href', gist.html_url);
