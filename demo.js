@@ -99,8 +99,9 @@ function displayGists(pagesToDisplay) {
   }
 
   var filteredGists = getFilteredGists(totalGistArray);
+  var finalDisplayList = filterOutFavorites(filteredGists);
   var orderedList = document.getElementById('gist-list');
-  createGistList(orderedList, filteredGists);
+  createGistList(orderedList, finalDisplayList);
 }
 
 function removeAllListItems(listName) {
@@ -191,7 +192,7 @@ function liDesc(gist, buttonType) {
   else if (buttonType === 'removeBtn')
   {
     buttonToAdd.value = "Remove Me";
-    //buttonToAdd.onclick = addToFavoriteList;
+    buttonToAdd.onclick = removeFavorite;
   }
 
   li.appendChild(a);
@@ -213,6 +214,8 @@ function checkForFavorites()
   {
     DisplayEmptyFavoriteList();
   }
+
+  DisplayFavoritesList();
 }
 
 function storedFavListEmpty() {
@@ -231,6 +234,21 @@ function DisplayEmptyFavoriteList() {
   var orderedList = document.getElementById('fav-list');
 
   orderedList.appendChild(createTextLi('There are currently no favorites.'));
+}
+
+function DisplayFavoritesList() {
+  // Needs to be implemented
+  if (storedFavListEmpty())
+  {
+    return; 
+  }
+
+  var orderedList = document.getElementById('fav-list');
+  var savedFavList = JSON.parse(localStorage.getItem('favlist'));
+  for (var i = 0; i < savedFavList.length; i++)
+  {
+    orderedList.appendChild(liDesc(savedFavList[i], 'removeBtn'));
+  }
 }
 
 function createTextLi(displayText) {
@@ -278,4 +296,66 @@ function saveFavoritedItem(unsavedFavItem) {
     savedFavList.push(unsavedFavItem);
     localStorage.setItem('favlist', JSON.stringify(savedFavList));
   }
+}
+
+// This method assumes all gist URLs are unique
+function removeFavorite() {
+  var favItemURL = this.parentNode.firstElementChild.getAttribute('href');
+
+  if (storedFavListEmpty()) {
+    return;
+  }
+
+  var indexToRemove = findIdxOfFavoritedItem(favItemURL);
+
+  // Remove the unfavorited item from local storage
+  var savedFavList = JSON.parse(localStorage.getItem('favlist'));
+  savedFavList.splice(indexToRemove, 1);
+  localStorage.setItem('favlist', JSON.stringify(savedFavList));
+
+  // Remove element from displayed favorites list
+  this.parentNode.parentNode.removeChild(this.parentNode);
+
+  // Add the removed favorite item back to the gist list
+  requeryResults(); 
+}
+
+
+function findIdxOfFavoritedItem(favItemURL) {
+  var savedFavList = JSON.parse(localStorage.getItem('favlist'));
+  for (var i = 0; i < savedFavList.length; i++)
+  {
+    for (var savedFavProp in savedFavList[i]) {
+      if (savedFavProp === 'html_url') {
+        if (savedFavList[i][savedFavProp] === favItemURL)
+        {
+          return i; // Returns the index of the item
+        }
+      }
+    }
+  }
+
+  return -1; // Did not find the item
+}
+
+function filterOutFavorites(filteredGists) {
+  if (storedFavListEmpty())
+  {
+    return filteredGists;
+  }
+
+  var listWithoutFav = new Array();
+  var index = -1;
+  for (var i = 0; i < filteredGists.length; i++){
+    index = findIdxOfFavoritedItem(filteredGists[i]['html_url']);
+
+    // if (index > -1) {
+    //   filteredGists.splice(i, 1);
+    // }
+    if (index === -1) {
+      listWithoutFav.push(filteredGists[i]);
+    }
+  }
+
+  return listWithoutFav;
 }
