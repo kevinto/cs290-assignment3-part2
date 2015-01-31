@@ -1,7 +1,7 @@
 window.onload = function() {
-  var numberOfPages = 1;
+  var numberOfPages = 5;
 
-  //getGists(numberOfPages, true);
+  getGists(numberOfPages, false);
   //displayGists(numberInitialPagesToDisplay);
 }
 
@@ -25,6 +25,7 @@ function getGists(numberOfPages, refreshGists) {
     gistsAlreadyStored = gistsExistLocally(numberOfPages);
     if (gistsAlreadyStored === true)
     {
+      // This is a refresh, so display first page of gists
       return;
     }
   }
@@ -38,12 +39,13 @@ function getGists(numberOfPages, refreshGists) {
 
 function gistsExistLocally(numberOfPages) {
   var pageName = 'page';
+  var currPageName = '';
   var pageInfo = null;
   for (var i = 0; i < numberOfPages; i++)
   {
-    pageName += i;
-    pageInfo = localStorage.getItem(pageName);
-    if (pageInfo === null) {
+    currPageName = pageName + i;
+    pageInfo = localStorage.getItem(currPageName);
+    if (pageInfo === null || pageInfo.toString() === '""') {
       return false; // All gists do not exist locally
     }
   }
@@ -78,23 +80,29 @@ function requestGistPage(pageNumber) {
   request.send(); 
 }
 
-// Gets the gists onload first
-	// Store them on the page or in local storage
-	// Can store them as different page objects?
-//getGists(); // This means the API requests. move this to onload
-
 function displayGists(pagesToDisplay) {
-    // var pageInfo = null;
-    // while (pageInfo === null) {
-      pageInfo = localStorage.getItem('page0');
-    //   break;
-    // } 
+  if (!gistsExistLocally(pagesToDisplay)) {
+    return;
+  } 
 
-    var firstStringify = JSON.parse(pageInfo);
-    var finalObjectList = JSON.parse(firstStringify);
+  // Clear the li
+  removeAllListItems();
 
-    ul = document.getElementById('gist-list')
-    createGistList(document.getElementById('gist-list'), finalObjectList);
+  // need to revamp this to display multiple pages
+  pageInfo = localStorage.getItem('page0');
+
+  var firstStringify = JSON.parse(pageInfo);
+  var finalObjectList = JSON.parse(firstStringify);
+
+  ul = document.getElementById('gist-list');
+  createGistList(document.getElementById('gist-list'), finalObjectList);
+}
+
+function removeAllListItems() {
+  var ul = document.getElementById('gist-list');
+  while (ul.firstChild) {
+    ul.removeChild(ul.firstChild);
+  }
 }
 
 function createGistList(ul, objectList) {
@@ -118,34 +126,34 @@ function liDesc(gist) {
   return li;
 }
 
-function dlEntry(term, gist) {
-  var dt = document.createElement('dt');
-  var dd = document.createElement('dd');
-  dt.innerText = term;
+// function dlEntry(term, gist) {
+//   var dt = document.createElement('dt');
+//   var dd = document.createElement('dd');
+//   dt.innerText = term;
 
-  var a = document.createElement('a');
+//   var a = document.createElement('a');
 
-  var aText = document.createTextNode(gist.description);
-  if (gist.description === "") {
-    aText = document.createTextNode('This gist has no description!!!');
-  };
+//   var aText = document.createTextNode(gist.description);
+//   if (gist.description === "") {
+//     aText = document.createTextNode('This gist has no description!!!');
+//   };
 
-  a.setAttribute('href', gist.html_url);
-  a.appendChild(aText);
-  dd.appendChild(a);
-  return  {'dt':dt, 'dd':dd};
-}
+//   a.setAttribute('href', gist.html_url);
+//   a.appendChild(aText);
+//   dd.appendChild(a);
+//   return  {'dt':dt, 'dd':dd};
+// }
 //displayGists(1);
 
 // Lets display the results
 
-function testme()
-{
-  console.log('method execution successful');
-  displayGists(1);
-}
+// function testme()
+// {
+//   console.log('method execution successful');
+//   displayGists(1);
+// }
 
-// How to get value from an element 
-function howtocheckboxes() {
-  document.getElementById("display_javascript").checked;
-}
+// // How to get value from an element 
+// function howtocheckboxes() {
+//   document.getElementById("display_javascript").checked;
+// }
