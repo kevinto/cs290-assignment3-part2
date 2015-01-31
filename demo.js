@@ -81,21 +81,38 @@ function requestGistPage(pageNumber) {
 }
 
 function displayGists(pagesToDisplay) {
+  // Check if gists exist in local storage
   if (!gistsExistLocally(pagesToDisplay)) {
     return;
   } 
 
-  // Clear the li
+  // Check if number of pages to display is valid
+  if (pagesToDisplay < 1 || 5 < pagesToDisplay)
+  {
+    return;
+  }
+
   removeAllListItems();
 
-  // need to revamp this to display multiple pages
-  pageInfo = localStorage.getItem('page0');
+  // Put all gist pages to be displayed into one array
+  var pageName = 'page';
+  var currPgName = '';
+  var totalGistArray = new Array();
+  for (var i = 0; i < pagesToDisplay; i++)
+  {
+    currPgName = pageName + i;
+    pageInfo = localStorage.getItem(currPgName);
 
-  var firstStringify = JSON.parse(pageInfo);
-  var finalObjectList = JSON.parse(firstStringify);
+    var unParsedObj = JSON.parse(pageInfo);
+    var gistObjs = JSON.parse(unParsedObj);
 
-  ul = document.getElementById('gist-list');
-  createGistList(document.getElementById('gist-list'), finalObjectList);
+    gistObjs.forEach(function (singleGist) {
+      totalGistArray.push(singleGist);
+    })
+  }
+
+  var orderedList = document.getElementById('gist-list');
+  createGistList(orderedList, totalGistArray);
 }
 
 function removeAllListItems() {
@@ -126,34 +143,8 @@ function liDesc(gist) {
   return li;
 }
 
-// function dlEntry(term, gist) {
-//   var dt = document.createElement('dt');
-//   var dd = document.createElement('dd');
-//   dt.innerText = term;
-
-//   var a = document.createElement('a');
-
-//   var aText = document.createTextNode(gist.description);
-//   if (gist.description === "") {
-//     aText = document.createTextNode('This gist has no description!!!');
-//   };
-
-//   a.setAttribute('href', gist.html_url);
-//   a.appendChild(aText);
-//   dd.appendChild(a);
-//   return  {'dt':dt, 'dd':dd};
-// }
-//displayGists(1);
-
-// Lets display the results
-
-// function testme()
-// {
-//   console.log('method execution successful');
-//   displayGists(1);
-// }
-
-// // How to get value from an element 
-// function howtocheckboxes() {
-//   document.getElementById("display_javascript").checked;
-// }
+function requeryResults()
+{
+  var numPgToDisplay = document.getElementById('numerical_input').value;
+  displayGists(numPgToDisplay);
+}

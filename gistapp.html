@@ -6,16 +6,9 @@
   <script src='demo.js'></script>
 </head>
 <body onload="displayGists(1);">
-<!-- <body> -->
-  <!--form>
-    <input type='text' name='demo-input'>
-    <input type='button' name='save' onclick='saveDemoInput()' value='Save Text'>
-    <input type='button' name='clear' onclick='clearLocalStorage()' value='Clear Local Storage'>
-    <input type='button' name='display' onclick='displayLocalStorage()' value='Display Local Storage'>
-  </form -->
   <div>
     <div>
-      <input type="text" name="numerical_input" value=1>
+      <input type="number" id="numerical_input" min=1 max=5 value=1>
       <label>Number of Pages to Display (Max: 5 pages)</label>
     </div>
     <div>
@@ -30,7 +23,7 @@
       <label>Python</label>
     </div>
     <div>
-    <input type="submit" value="Search" onclick="testme();">
+    <input type="submit" value="Search" onclick="requeryResults();">
     </div>
   </div>
 
