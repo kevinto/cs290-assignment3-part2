@@ -165,11 +165,11 @@ function getFilteredGists(unfilteredGists) {
 
 function createGistList(ol, objectList) {
   objectList.forEach(function(s) {
-    ol.appendChild(liDesc(s));
+    ol.appendChild(liDesc(s, 'favButton'));
   });
 }
 
-function liDesc(gist) {
+function liDesc(gist, buttonType) {
   var li = document.createElement('li'); 
 
   // Create hyperlink
@@ -182,8 +182,20 @@ function liDesc(gist) {
   a.appendChild(aText);
 
   // Create favorite button
+  var buttonToAdd = document.createElement('input');
+  buttonToAdd.type = "button";
+  if (buttonType === 'favButton') {
+    buttonToAdd.value = "Favorite Me";
+    buttonToAdd.onclick = addToFavoriteList;
+  }
+  else if (buttonType === 'removeBtn')
+  {
+    buttonToAdd.value = "Remove Me";
+    //buttonToAdd.onclick = addToFavoriteList;
+  }
 
   li.appendChild(a);
+  li.appendChild(buttonToAdd);
   return li;
 }
 
@@ -225,4 +237,45 @@ function createTextLi(displayText) {
   var li = document.createElement('li'); 
   li.innerText = displayText;
   return li;
+}
+
+function addToFavoriteList() {
+  var favItemDesc = this.parentNode.firstElementChild.innerText;
+  var favItemURL = this.parentNode.firstElementChild.getAttribute('href');
+  var unsavedFavItem = new favItem(favItemDesc, favItemURL);
+
+  // If no items in fav list, clear it
+  if (storedFavListEmpty()) {
+    removeAllListItems('fav-list'); 
+  }
+
+  saveFavoritedItem(unsavedFavItem);
+
+  // Display the element in the favorites list
+  var orderedList = document.getElementById('fav-list');
+  orderedList.appendChild(liDesc(unsavedFavItem, 'removeBtn'));
+
+  // Remove the current list element from the gist results list
+  this.parentNode.parentNode.removeChild(this.parentNode);
+}
+
+function favItem(itemDesc, itemURL) {
+  this.description = itemDesc;
+  this.html_url = itemURL;
+}
+
+function saveFavoritedItem(unsavedFavItem) {
+  if (storedFavListEmpty()) {
+    // Save the first favorited item
+    var initialSavedArray = new Array();
+    initialSavedArray.push(unsavedFavItem);
+    localStorage.setItem('favlist', JSON.stringify(initialSavedArray));
+  } 
+  else
+  {
+    // Save to pre-existing list
+    var savedFavList = JSON.parse(localStorage.getItem('favlist'));
+    savedFavList.push(unsavedFavItem);
+    localStorage.setItem('favlist', JSON.stringify(savedFavList));
+  }
 }
