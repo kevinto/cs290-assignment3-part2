@@ -99,18 +99,29 @@ function displayGists(pagesToDisplay) {
 
 function createGistList(ul, objectList) {
   objectList.forEach(function(s) {
-    var li = document.createElement('li');
-    li.appendChild(liDesc(s));
-    ul.appendChild(li);
+    //var li = document.createElement('li');
+    //li.appendChild(liDesc(s));
+    ul.appendChild(liDesc(s));
   });
 }
 
 function liDesc(gist) {
-  var dl = document.createElement('dl');
-  var entry = dlEntry('Desc: ', gist);
-  dl.appendChild(entry.dt);
-  dl.appendChild(entry.dd);
-  return dl;
+  var li = document.createElement('li'); 
+
+  var a = document.createElement('a');
+  var aText = document.createTextNode(gist.description);
+  if (gist.description === "") {
+    aText = document.createTextNode('This gist has no description!!!');
+  }
+
+  a.setAttribute('href', gist.html_url);
+  a.appendChild(aText);
+  li.appendChild(a);
+  // var dl = document.createElement('dl');
+  // var entry = dlEntry('Desc: ', gist);
+  // dl.appendChild(entry.dt);
+  // dl.appendChild(entry.dd);
+  return li;
 }
 
 function dlEntry(term, gist) {
