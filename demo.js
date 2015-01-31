@@ -99,8 +99,6 @@ function displayGists(pagesToDisplay) {
 
 function createGistList(ul, objectList) {
   objectList.forEach(function(s) {
-    //var li = document.createElement('li');
-    //li.appendChild(liDesc(s));
     ul.appendChild(liDesc(s));
   });
 }
@@ -117,10 +115,6 @@ function liDesc(gist) {
   a.setAttribute('href', gist.html_url);
   a.appendChild(aText);
   li.appendChild(a);
-  // var dl = document.createElement('dl');
-  // var entry = dlEntry('Desc: ', gist);
-  // dl.appendChild(entry.dt);
-  // dl.appendChild(entry.dd);
   return li;
 }
 
@@ -139,8 +133,6 @@ function dlEntry(term, gist) {
   a.setAttribute('href', gist.html_url);
   a.appendChild(aText);
   dd.appendChild(a);
-  //dd.innerText = gist.description;
-  //dd.baseURI = gist.html_url;
   return  {'dt':dt, 'dd':dd};
 }
 //displayGists(1);
