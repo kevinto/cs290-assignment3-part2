@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <title>Gist App</title>
-  <script src='demo.js'></script>
+  <script src='gistapp.js'></script>
   <link rel="stylesheet" href="gistapp.css">
 </head>
-<body onload="displayGists(1); checkForFavorites();">
+<body onload="requeryResults(); checkForFavorites();">
   <div id="searchablegists">
     <h1>Gist API Results</h1>
     <div>
-      <input type="number" id="numerical_input" min=1 max=5 value=1>
+      <input type="number" id="numerical_input" min=1 max=5 value=1 onkeyup="validatePageNumbers();">
       <label>Number of Pages to Display (Max: 5 pages)</label>
     </div>
     <div>
