@@ -73,10 +73,7 @@ function requestGistPage(pageNumber) {
     {
       localStorage.setItem(pageName, JSON.stringify(this.responseText));
 
-      // If this is the first page, then make sure it gets displayed
-      if (pageNumber === 0) {
-        displayGists(1);
-      }
+      requeryResults();
     }
   };
 
